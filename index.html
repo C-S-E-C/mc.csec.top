@@ -523,6 +523,15 @@
                 .then(data => {
                     splashTexts = data.split('\n').map(line => line.trim()).filter(line => line.length > 0);
                 })
+                .then(() => {
+                    fetch('special.txt')
+                        .then(response => response.text())
+                        .then(data => {
+                            if (data.trim().length > 0) {
+                                splashTexts = data
+                            }
+                        });
+                })
                 .finally(() => {
                     const splashTextElement = document.getElementById('splash-text');
                     const randomIndex = Math.floor(Math.random() * splashTexts.length);
