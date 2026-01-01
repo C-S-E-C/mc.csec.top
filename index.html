@@ -528,7 +528,7 @@
                         .then(response => response.text())
                         .then(data => {
                             if (data.trim().length > 0) {
-                                splashTexts = data
+                                splashTexts = [data];
                             }
                         });
                 })
@@ -536,6 +536,7 @@
                     const splashTextElement = document.getElementById('splash-text');
                     const randomIndex = Math.floor(Math.random() * splashTexts.length);
                     splashTextElement.textContent = splashTexts[randomIndex];
+                    splashTextElement.style.right = splashTextElement.textContent.length / 9 * 10 * -1 + "%";
                 });
         }
     </script>
