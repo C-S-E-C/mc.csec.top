@@ -509,35 +509,64 @@
                 toggleSlideshow();
             }
         });
-        function loadsplashtext() {
-            var splashTexts
-            splashTexts = [
-                        "欢迎来到CSECMC服务器！",
-                        "祝你游戏愉快！",
-                        "探索无限可能！",
-                        "与朋友一起冒险！",
-                        "创造属于你的世界！"
-                    ];
-            fetch('splash.txt')
-                .then(response => response.text())
-                .then(data => {
-                    splashTexts = data.split('\n').map(line => line.trim()).filter(line => line.length > 0);
-                })
-                .then(() => {
-                    fetch('special.txt')
-                        .then(response => response.text())
-                        .then(data => {
-                            if (data != "") {
-                                splashTexts = [data];
-                            }
-                        });
-                })
-                .finally(() => {
-                    const splashTextElement = document.getElementById('splash-text');
-                    const randomIndex = Math.floor(Math.random() * splashTexts.length);
-                    splashTextElement.textContent = splashTexts[randomIndex];
-                    splashTextElement.style.right = splashTextElement.textContent.length / 9 * 10 * -1 + "%";
-                });
+        
+        async function loadsplashtext() {
+            try {
+                let splashTexts = [
+                    "欢迎来到CSECMC服务器！",
+                    "祝你游戏愉快！",
+                    "探索无限可能！",
+                    "与朋友一起冒险！",
+                    "创造属于你的世界！"
+                ];
+
+                // 首先检查是否有特殊文本
+                try {
+                    const specialResponse = await fetch('special.txt');
+                    if (specialResponse.ok) {
+                        const specialData = await specialResponse.text();
+                        if (specialData.trim() !== "") {
+                            splashTexts = [specialData.trim()];
+                            displaySplashText(splashTexts);
+                            return; // 有特殊文本就不加载普通文本
+                        }
+                    }
+                } catch (e) {
+                    // special.txt 不存在，继续
+                }
+
+                // 加载普通文本文件
+                try {
+                    const splashResponse = await fetch('splash.txt');
+                    if (splashResponse.ok) {
+                        const splashData = await splashResponse.text();
+                        const lines = splashData.split('\n')
+                            .map(line => line.trim())
+                            .filter(line => line.length > 0);
+                        
+                        if (lines.length > 0) {
+                            splashTexts = lines;
+                        }
+                    }
+                } catch (e) {
+                    // splash.txt 不存在，使用默认文本
+                }
+
+                displaySplashText(splashTexts);
+            } catch (error) {
+                console.error('加载欢迎文本时出错:', error);
+            }
+
+            function displaySplashText(texts) {
+                const splashTextElement = document.getElementById('splash-text');
+                if (!splashTextElement) return;
+                
+                const randomIndex = Math.floor(Math.random() * texts.length);
+                splashTextElement.textContent = texts[randomIndex];
+                
+                const textLength = splashTextElement.textContent.length;
+                splashTextElement.style.right = `${textLength / 9 * 10 * -1}%`;
+            }
         }
     </script>
 </body>
