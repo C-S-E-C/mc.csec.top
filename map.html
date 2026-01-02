@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>服务器地图</title>
+    <meta charset="UTF-8">
+    <style>
+        body, html {
+            margin: 0;
+            height: 100%;
+            overflow: hidden;
+        }
+        
+        #main {
+            width: 100%;
+            height: 100%;
+            position: relative;
+        }
+        
+        .background-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            position: absolute;
+            top: 0;
+            left: 0;
+            z-index: 0;
+        }
+        
+        .map-frame {
+            position: absolute;
+            border: none;
+            z-index: 1;
+            width: calc(100% - 120px); /* 左右各减去100px */
+            height: calc(100% - 120px); /* 上下各减去100px */
+            top: 60px;
+            left: 60px;
+        }
+    </style>
+</head>
+<body>
+    <div id="main">
+        <img src="https://assets.r2.csec.top/mc.csec.top/map_background.webp" class="background-img">
+        <iframe src="https://1.s.csec.top:10099/?world=world&x=-7157&z=13061" class="map-frame"></iframe>
+    </div>
+</body>
+</html>
