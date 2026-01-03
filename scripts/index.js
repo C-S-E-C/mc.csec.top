@@ -435,3 +435,12 @@ function openWindowWithSize(url, width, height, windowName) {
     
     window.open(url, windowName, features);
 }
+function openoffice(link) {
+    if (!link.startsWith("http://") && !link.startsWith("https://")) {
+        link = "https://mc.csec.top/" + link;
+    }
+    window.open("https://view.officeapps.live.com/op/view.aspx?src=" + encodeURIComponent(link), '_blank');
+}
+function openbili() {
+    open("https://space.bilibili.com/3632314816924009", '_blank');
+}

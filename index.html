@@ -19,20 +19,29 @@
         <canvas id="gallery2"></canvas>
         <div id="loader" class="loader" style="display: none;"></div>
     </section>
+
+    <section id="about">
+        <h2>关于我们</h2>
+        <p>我们是一个生电，红石与建筑并存的服务器</p>
+        <p>你可以通过服务器地图,b站账号与服务器规则了解更多信息</p>
+        <div id="about-links">
+            <button onclick="openWindowWithSize('map.html', 800, 800, 'map')">点击查看服务器地图</button>
+            <button onclick='openbili()'>点击查看B站主页</button>
+            <button onclick="openoffice('rules.docx')">点击查看服务器规则</button>
+        </div>
+    </section>
+
     <section id="join">
         <h2>加入我们的服务器！</h2>
         <p>服务器地址: <strong>mc.csec.top</strong></p>
         <p style="line-height: 50px;">
         Kook群聊:
-        <button style="background-color: #53d900; border: none; border-radius: 5px; height: 50px; padding: 0 15px; cursor: pointer; vertical-align: middle;" onclick="openWindowWithSize('https://kook.vip/D1CK18', 800, 600, 'Kook 邀请')">
+        <button style="background-color: #53d900;" onclick="openWindowWithSize('https://kook.vip/D1CK18', 800, 600, 'Kook 邀请')">
             <img style="height: 30px; vertical-align: middle;" src="https://assets.r2.csec.top/mc.csec.top/kook.webp" alt="Kook Logo" />
         </button>
         </p>
-    </section>
-    <section id="about">
-        <h2>关于我们</h2>
-        <p>服务器地图</p>
-        <button style="border: none; border-radius: 5px;padding: 0 15px; cursor: pointer; vertical-align: middle;" onclick="openWindowWithSize('map.html', 800, 800, 'map')">点击查看</button>
+        <p>为了确保服务器与玩家作品安全，我们设置了加入考试，通过任意两个考试后即可加入服务器!</p>
+        <button onclick="open('', '_blank')">参加入服考试</button>
     </section>
 </body>
 </html>
