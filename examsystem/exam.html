@@ -190,7 +190,8 @@
             const questions = await response.json();
             
             const mcContainer = document.getElementById('multiple-choice-questions');
-            questions.multiple_choice.forEach((q, index) => {
+            questions.forEach((q, index) => {
+                if (q.type != 'multiple_choice') return;
                 const questionDiv = document.createElement('div');
                 questionDiv.className = 'question';
                 questionDiv.innerHTML = `
@@ -206,7 +207,8 @@
             });
             
             const fibContainer = document.getElementById('fill-in-blank-questions');
-            questions.fill_in_blank.forEach((q, index) => {
+            questions.forEach((q, index) => {
+                if (q.type != 'fill_in_blank') return;
                 const questionDiv = document.createElement('div');
                 questionDiv.className = 'question';
                 questionDiv.innerHTML = `
@@ -217,7 +219,8 @@
             });
             
             const laContainer = document.getElementById('long-answer-questions');
-            questions.long_answer.forEach((q, index) => {
+            questions.forEach((q, index) => {
+                if (q.type != 'long_answer') return;
                 const questionDiv = document.createElement('div');
                 questionDiv.className = 'question';
                 questionDiv.innerHTML = `
