@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Exam History - Exam Site</title>
+    <link rel="stylesheet" href="static/css/style.css">
+</head>
+<body>
+    <div class="dashboard-container">
+        <header class="dashboard-header">
+            <h1>My Exam History</h1>
+            <div class="header-actions">
+                <a href="dashboard.html" class="btn-secondary">Back to Dashboard</a>
+                <a href="login.html" class="btn-secondary" onclick="logout()">Logout</a>
+            </div>
+        </header>
+        
+        <div class="history-content">
+            <div class="student-info-card">
+                <p><strong>Name:</strong> <span id="student-name"></span></p>
+                <p><strong>Student ID:</strong> <span id="student-id"></span></p>
+            </div>
+            
+            <div id="exams-list" class="exams-list">
+                <p class="loading">Loading your exams...</p>
+            </div>
+        </div>
+    </div>
+
+    <script src="static/js/main.js"></script>
+    <script>
+    async function loadExams() {
+        try {
+            const response = await fetch('https://1.s.csec.top:10097/api/student/exams', {
+                credentials: 'include'
+            });
+            const exams = await response.json();
+            renderExams(exams);
+        } catch (error) {
+            document.getElementById('exams-list').innerHTML = '<p class="error">Failed to load exams</p>';
+        }
+    }
+
+    async function loadStudentInfo() {
+        try {
+            const response = await fetch('https://1.s.csec.top:10097/api/dashboard', {
+                credentials: 'include'
+            });
+            const data = await response.json();
+            
+            if (data.success) {
+                document.getElementById('student-name').textContent = data.name;
+                document.getElementById('student-id').textContent = data.student_id;
+            }
+        } catch (error) {
+            console.error('Error loading student info:', error);
+        }
+    }
+
+    function renderExams(exams) {
+        const listDiv = document.getElementById('exams-list');
+        
+        if (exams.length === 0) {
+            listDiv.innerHTML = '<p class="no-data">No exams taken yet. Go to dashboard to start an exam.</p>';
+            return;
+        }
+        
+        const statusLabels = {
+            'pending': 'Under Review',
+            'passed': 'Passed',
+            'cheated': 'Flagged for Cheating',
+            'failed': 'Failed (score under 60)'
+        };
+        
+        const statusClasses = {
+            'pending': 'status-pending',
+            'passed': 'status-passed',
+            'cheated': 'status-cheated',
+            'failed': 'status-failed'
+        };
+        
+        const html = exams.map(exam => {
+            const autoScore = exam.score || 0;
+            const maxScore = exam.max_score || 0;
+            const finalScore = exam.final_score !== undefined ? exam.final_score : autoScore;
+            const status = exam.status || 'pending';
+            
+            return `
+                <div class="exam-history-card ${statusClasses[status]}">
+                    <div class="exam-history-header">
+                        <div>
+                            <h3>${exam.subject}</h3>
+                            <p class="exam-date">${new Date(exam.submitted_at).toLocaleString()}</p>
+                        </div>
+                        <span class="status-badge ${statusClasses[status]}">${statusLabels[status]}</span>
+                    </div>
+                    
+                    <div class="exam-scores">
+                        <div class="score-section">
+                            <h4>Auto-Graded Score</h4>
+                            <div class="score-breakdown">
+                                <p><strong>Multiple Choice:</strong> ${exam.mc_correct || 0}/${exam.mc_total || 0} correct (${(exam.mc_correct || 0) * 5} pts)</p>
+                                <p><strong>Fill in Blank:</strong> ${exam.fib_correct || 0}/${exam.fib_total || 0} correct (${(exam.fib_correct || 0) * 5} pts)</p>
+                                <p><strong>Long Answer:</strong> ${exam.la_total || 0} questions (${(exam.la_total || 0) * 10} pts max, pending review)</p>
+                            </div>
+                            <p class="auto-score"><strong>Auto Score:</strong> ${autoScore} / ${maxScore}</p>
+                        </div>
+                        
+                        ${status !== 'pending' ? `
+                            <div class="final-score-section">
+                                <h4>Final Score</h4>
+                                <p class="final-score">${finalScore} / ${maxScore}</p>
+                            </div>
+                        ` : ''}
+                    </div>
+                    
+                    ${status === 'cheated' ? `
+                        <div class="cheat-warning">
+                            <p>This exam has been flagged for academic dishonesty. Please contact your administrator.</p>
+                        </div>
+                    ` : ''}
+                </div>
+            `;
+        }).join('');
+        
+        listDiv.innerHTML = html;
+    }
+
+    function logout() {
+        fetch('https://1.s.csec.top:10097/logout', {
+            method: 'POST',
+            credentials: 'include'
+        }).finally(() => {
+            window.location.href = 'login.html';
+        });
+    }
+
+    loadStudentInfo();
+    loadExams();
+    </script>
+</body>
+</html>
