@@ -192,6 +192,10 @@
     <script src="static/js/main.js"></script>
     <script>
     const API_BASE = 'https://1.s.csec.top:10097';
+    const adminToken = localStorage.getItem('adminToken');
+    if (!adminToken) {
+        window.location.href = 'admin_login.html';
+    }
     
     let allSubmissions = [];
     let allRecordings = [];
@@ -232,7 +236,9 @@
     async function loadRecordings() {
         try {
             const response = await fetch(`${API_BASE}/api/admin/recordings`, {
-                credentials: 'include'
+                headers: {
+                    'Authorization': `Bearer ${adminToken}`
+                }
             });
             const data = await response.json();
             allRecordings = data;
@@ -245,7 +251,9 @@
     async function loadRecordingSubjectsFilter() {
         try {
             const response = await fetch(`${API_BASE}/api/admin/questions/subjects`, {
-                credentials: 'include'
+                headers: {
+                    'Authorization': `Bearer ${adminToken}`
+                }
             });
             const subjects = await response.json();
             
@@ -315,7 +323,9 @@
         try {
             const response = await fetch(`${API_BASE}/api/admin/delete-recording/${recordingId}`, {
                 method: 'DELETE',
-                credentials: 'include'
+                headers: {
+                    'Authorization': `Bearer ${adminToken}`
+                }
             });
             const data = await response.json();
             
@@ -350,7 +360,9 @@
     async function loadSubjectsFilter() {
         try {
             const response = await fetch(`${API_BASE}/api/admin/questions/subjects`, {
-                credentials: 'include'
+                headers: {
+                    'Authorization': `Bearer ${adminToken}`
+                }
             });
             const subjects = await response.json();
             
@@ -376,7 +388,9 @@
     async function loadSubjectsForQuestions() {
         try {
             const response = await fetch(`${API_BASE}/api/admin/questions/subjects`, {
-                credentials: 'include'
+                headers: {
+                    'Authorization': `Bearer ${adminToken}`
+                }
             });
             const subjects = await response.json();
             
@@ -406,7 +420,9 @@
         
         try {
             const response = await fetch(url, {
-                credentials: 'include'
+                headers: {
+                    'Authorization': `Bearer ${adminToken}`
+                }
             });
             const questions = await response.json();
             renderQuestions(questions);
@@ -473,8 +489,10 @@
         try {
             const response = await fetch(`${API_BASE}/api/admin/add-question`, {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                credentials: 'include',
+                headers: { 
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${adminToken}`
+                },
                 body: JSON.stringify({
                     type,
                     subject,
@@ -508,7 +526,9 @@
         try {
             const response = await fetch(`${API_BASE}/api/admin/delete-question/${questionId}`, {
                 method: 'DELETE',
-                credentials: 'include'
+                headers: {
+                    'Authorization': `Bearer ${adminToken}`
+                }
             });
             const data = await response.json();
             
@@ -526,7 +546,9 @@
     async function loadSubmissions() {
         try {
             const response = await fetch(`${API_BASE}/api/admin/submissions`, {
-                credentials: 'include'
+                headers: {
+                    'Authorization': `Bearer ${adminToken}`
+                }
             });
             const data = await response.json();
             allSubmissions = data;
@@ -574,7 +596,9 @@
     async function viewExamDetail(examId) {
         try {
             const response = await fetch(`${API_BASE}/api/admin/exam/${examId}`, {
-                credentials: 'include'
+                headers: {
+                    'Authorization': `Bearer ${adminToken}`
+                }
             });
             const exam = await response.json();
             
@@ -642,8 +666,10 @@
         try {
             const response = await fetch(`${API_BASE}/api/admin/update-exam/${currentExamId}`, {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                credentials: 'include',
+                headers: { 
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${adminToken}`
+                },
                 body: JSON.stringify({
                     status,
                     final_score: parseInt(finalScore)
@@ -678,7 +704,9 @@
         
         try {
             const response = await fetch(`${API_BASE}/api/admin/recording/${recordingId}`, {
-                credentials: 'include'
+                headers: {
+                    'Authorization': `Bearer ${adminToken}`
+                }
             });
             const data = await response.json();
             
@@ -711,7 +739,9 @@
     async function loadAdmins() {
         try {
             const response = await fetch(`${API_BASE}/api/admin/admins`, {
-                credentials: 'include'
+                headers: {
+                    'Authorization': `Bearer ${adminToken}`
+                }
             });
             const admins = await response.json();
             renderAdmins(admins);
@@ -751,8 +781,10 @@
         try {
             const response = await fetch(`${API_BASE}/api/admin/add-admin`, {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                credentials: 'include',
+                headers: { 
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${adminToken}`
+                },
                 body: JSON.stringify({ name, username, password })
             });
             
@@ -778,7 +810,9 @@
         try {
             const response = await fetch(`${API_BASE}/api/admin/delete-admin/${adminId}`, {
                 method: 'DELETE',
-                credentials: 'include'
+                headers: {
+                    'Authorization': `Bearer ${adminToken}`
+                }
             });
             const data = await response.json();
             
@@ -793,32 +827,10 @@
         }
     }
 
-    document.getElementById('search')?.addEventListener('input', filterSubmissions);
-    document.getElementById('subjectFilter')?.addEventListener('change', filterSubmissions);
-    document.getElementById('statusFilter')?.addEventListener('change', filterSubmissions);
-
-    function filterSubmissions() {
-        const search = document.getElementById('search').value.toLowerCase();
-        const subject = document.getElementById('subjectFilter').value;
-        const status = document.getElementById('statusFilter').value;
-        
-        const filtered = allSubmissions.filter(sub => {
-            const matchSearch = sub.name.toLowerCase().includes(search) || sub.student_id.toLowerCase().includes(search);
-            const matchSubject = !subject || sub.subject === subject;
-            const matchStatus = !status || sub.status === status;
-            return matchSearch && matchSubject && matchStatus;
-        });
-        
-        renderSubmissions(filtered);
-    }
-
     function logout() {
-        fetch(`${API_BASE}/logout`, {
-            method: 'POST',
-            credentials: 'include'
-        }).finally(() => {
-            window.location.href = 'admin_login.html';
-        });
+        localStorage.removeItem('adminToken');
+        localStorage.removeItem('admin');
+        window.location.href = 'admin_login.html';
     }
 
     switchView('submissions');

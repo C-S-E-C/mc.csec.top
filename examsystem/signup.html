@@ -54,10 +54,13 @@
             const data = await response.json();
             
             if (data.success) {
+                localStorage.setItem('token', data.token);
+                localStorage.setItem('user', JSON.stringify(data.user));
+                
                 errorDiv.style.display = 'none';
                 successDiv.innerHTML = `
                     <strong>Account created successfully!</strong><br>
-                    Your Student ID is: <strong>${data.student_id}</strong><br>
+                    Your Student ID is: <strong>${data.user.student_id}</strong><br>
                     <small>Please save this ID for your records.</small>
                 `;
                 successDiv.style.display = 'block';

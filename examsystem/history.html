@@ -30,13 +30,24 @@
 
     <script src="static/js/main.js"></script>
     <script>
+    const token = localStorage.getItem('token');
+    if (!token) {
+        window.location.href = 'login.html';
+    }
+    
     async function loadExams() {
         try {
-            const response = await fetch('https://1.s.csec.top:10097/api/student/exams', {
-                credentials: 'include'
+            const response = await fetch('https://1.s.csec.top:10097/api/history', {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
             });
-            const exams = await response.json();
-            renderExams(exams);
+            const data = await response.json();
+            if (data.success) {
+                renderExams(data.exams);
+            } else {
+                document.getElementById('exams-list').innerHTML = '<p class="error">Failed to load exams</p>';
+            }
         } catch (error) {
             document.getElementById('exams-list').innerHTML = '<p class="error">Failed to load exams</p>';
         }
@@ -45,7 +56,9 @@
     async function loadStudentInfo() {
         try {
             const response = await fetch('https://1.s.csec.top:10097/api/dashboard', {
-                credentials: 'include'
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
             });
             const data = await response.json();
             
@@ -128,12 +141,9 @@
     }
 
     function logout() {
-        fetch('https://1.s.csec.top:10097/logout', {
-            method: 'POST',
-            credentials: 'include'
-        }).finally(() => {
-            window.location.href = 'login.html';
-        });
+        localStorage.removeItem('token');
+        localStorage.removeItem('user');
+        window.location.href = 'login.html';
     }
 
     loadStudentInfo();

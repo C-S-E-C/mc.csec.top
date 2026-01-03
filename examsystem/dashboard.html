@@ -30,11 +30,18 @@
 
     <script src="static/js/main.js"></script>
     <script>
+    const token = localStorage.getItem('token');
+    if (!token) {
+        window.location.href = 'login.html';
+    }
+    
     async function loadDashboard() {
         try {
             const response = await fetch('https://1.s.csec.top:10097/api/dashboard', {
                 method: 'GET',
-                credentials: 'include'
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
             });
             
             const data = await response.json();
@@ -55,21 +62,21 @@
                     subjectsGrid.innerHTML = '<p class="no-data">No subjects available</p>';
                 }
             } else {
+                localStorage.removeItem('token');
+                localStorage.removeItem('user');
                 window.location.href = 'login.html';
             }
         } catch (error) {
             console.error('Error loading dashboard:', error);
-            // window.location.href = 'login.html';
+            localStorage.removeItem('token');
+            localStorage.removeItem('user');
+            window.location.href = 'login.html';
         }
     }
     
     function logout() {
-        fetch('https://1.s.csec.top:10097/logout', {
-            method: 'POST',
-            credentials: 'include'
-        }).finally(() => {
-            window.location.href = 'login.html';
-        });
+        localStorage.removeItem('token');
+        localStorage.removeItem('user');
     }
     
     loadDashboard();
