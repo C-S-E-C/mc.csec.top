@@ -187,10 +187,10 @@
                     'Authorization': `Bearer ${token}`
                 }
             });
-            const questions = await response.json();
+            const resp = await response.json();
             
             const mcContainer = document.getElementById('multiple-choice-questions');
-            questions.forEach((q, index) => {
+            resp.questions.forEach((q, index) => {
                 if (q.type != 'multiple_choice') return;
                 const questionDiv = document.createElement('div');
                 questionDiv.className = 'question';
@@ -207,7 +207,7 @@
             });
             
             const fibContainer = document.getElementById('fill-in-blank-questions');
-            questions.forEach((q, index) => {
+            resp.questions.forEach((q, index) => {
                 if (q.type != 'fill_in_blank') return;
                 const questionDiv = document.createElement('div');
                 questionDiv.className = 'question';
@@ -219,7 +219,7 @@
             });
             
             const laContainer = document.getElementById('long-answer-questions');
-            questions.forEach((q, index) => {
+            resp.questions.forEach((q, index) => {
                 if (q.type != 'long_answer') return;
                 const questionDiv = document.createElement('div');
                 questionDiv.className = 'question';
