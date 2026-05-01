@@ -437,7 +437,7 @@ function openWindowWithSize(url, width, height, windowName) {
 }
 function openoffice(link) {
     if (!link.startsWith("http://") && !link.startsWith("https://")) {
-        link = "https://mc.csec.top/" + link;
+        link = "https://mc.syntropica.top/" + link;
     }
     window.open("https://view.officeapps.live.com/op/view.aspx?src=" + encodeURIComponent(link), '_blank');
 }
