@@ -15,7 +15,7 @@ function preloadImages() {
     for (let i = 0; i <= 4; i++) {
         const promise = new Promise((resolve, reject) => {
             const img = new Image();
-            img.src = `https://assets.r2.csec.top/mc.csec.top/background.${i}.webp`;
+            img.src = `https://assets.r2.syntropica.top/mc.csec.top/background.${i}.webp`;
             img.onload = () => {
                 console.log(`图片 ${i} 预加载成功`);
                 resolve(img);
